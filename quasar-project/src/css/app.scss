@@ -1,6 +1,6 @@
 // app global css in SCSS form
 .text-grand-hotel {
-  font-family: 'Grand Hotel', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: "Grand Hotel", "Roboto", "Helvetica Neue", sans-serif;
 }
 
 .small-screen-only {
@@ -23,6 +23,12 @@
 
 .layout--main {
   max-width: 975px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.layout--secondary {
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
