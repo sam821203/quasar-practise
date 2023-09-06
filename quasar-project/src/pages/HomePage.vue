@@ -64,7 +64,7 @@ const posts = reactive([
   {
     id: 1,
     authorName: "Sam Huang",
-    caption: "Golden Gate Bridge",
+    caption: "Golden Japan man",
     postDate: Date.now(),
     location: "Japan",
     imageUrl:
@@ -73,7 +73,7 @@ const posts = reactive([
   {
     id: 2,
     authorName: "John Doe",
-    caption: "Golden Gate Bridge",
+    caption: "Gate Bridge",
     postDate: Date.now(),
     location: "San Francisco, United States",
     imageUrl:

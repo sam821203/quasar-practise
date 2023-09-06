@@ -48,10 +48,11 @@
           class="col col-sm-6"
           v-model="post.location"
           label="Location"
+          :loading="locationLoading"
           dense
         >
           <template #append>
-            <q-btn round dense flat icon="eva-navigation-2-outline" />
+            <q-btn round dense flat icon="eva-navigation-2-outline" v-if="!locationLoading && locationSupported" @click='getLocation'/>
           </template>
         </q-input>
       </div>
@@ -69,14 +70,17 @@ export default {
 </script>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
-import { uid } from "quasar";
+import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
+import { uid, useQuasar } from "quasar";
+import axios from 'axios';
 
+const $q = useQuasar()
 const videoDom = ref(null);
 const canvasDom = ref(null);
 const imageCaptured = ref(false);
 const hasCameraSupport = ref(true);
 const imageUpload = reactive([]);
+const locationLoading = ref(false);
 
 const post = reactive({
   id: uid(),
@@ -85,6 +89,11 @@ const post = reactive({
   photo: null,
   date: Date.now(),
 });
+
+const locationSupported = computed(() => {
+  if ('geolocation' in navigator) return true;
+  return false
+})
 
 const initCamera = () => {
   navigator.mediaDevices
@@ -166,6 +175,44 @@ const captureImageFallBack = (file) => {
 
   reader.readAsDataURL(file);
 };
+
+const locationSuccess = (result) => {
+  post.location = result.data.city
+  if (result.data.country) {
+    post.location += `, ${result.data.country}`
+  }
+
+  locationLoading.value = false;
+}
+
+const locationError = (error) => {
+  $q.dialog({
+    title: 'Error',
+    message: error
+  })
+
+  locationLoading.value = false;
+}
+
+const getCityAndCountry = (position) => {
+  const apiUrl = `https://geocode.xyz/${position.coords.latitude},${position.coords.longitude}?json=1`
+  axios.get(apiUrl)
+    .then(res => {
+      locationSuccess(res)
+    })
+    .catch(err => {
+      locationError(err.message)
+    })
+}
+
+const getLocation = () => {
+  locationLoading.value = true
+  navigator.geolocation.getCurrentPosition(position => {
+    getCityAndCountry(position)
+  }, err => {
+    locationError(err.message)
+  }, { timeout: 5000 })
+}
 
 onMounted(() => {
   initCamera();
