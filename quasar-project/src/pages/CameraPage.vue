@@ -57,7 +57,7 @@
         </q-input>
       </div>
       <div class="row justify-center q-mt-lg">
-        <q-btn unelevated rounded color="primary" label="Post Image" />
+        <q-btn unelevated rounded color="primary" label="Post Image" @click='addPost()'/>
       </div>
     </div>
   </q-page>
@@ -212,6 +212,26 @@ const getLocation = () => {
   }, err => {
     locationError(err.message)
   }, { timeout: 5000 })
+}
+
+const addPost = () => {
+  const formData = new FormData()
+
+  formData.append('id', post.id)
+  formData.append('caption', post.caption)
+  formData.append('location', post.location)
+  formData.append('date', post.date)
+
+  // 新增 photo 欄位，第三個欄位是圖片名稱
+  formData.append('file', post.photo, post.id + '.png')
+
+  axios.post(`${process.env.API}/createPosts`, formData)
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 
 onMounted(() => {

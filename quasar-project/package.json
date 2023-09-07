@@ -6,6 +6,7 @@
   "author": "yuhao <sam821203@yahoo.com.tw>",
   "private": true,
   "scripts": {
+    "start": "npx quasar dev",
     "lint": "eslint --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
