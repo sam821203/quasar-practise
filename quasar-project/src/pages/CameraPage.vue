@@ -20,16 +20,16 @@
         color="grey-10"
         size="lg"
         icon="eva-camera"
+        :disable='imageCaptured'
         @click="captureImage"
-        v-if="hasCameraSupport"
       />
+      <!-- v-if="hasCameraSupport -->
       <q-file
         outlined
         v-model="imageUpload"
         label="Choose an image"
         accept="image/*"
         @update:model-value="captureImageFallBack"
-        v-else
       >
         <template #prepend>
           <q-icon name="eva-attach-outline" />
@@ -39,7 +39,7 @@
         <q-input
           class="col col-sm-6"
           v-model="post.caption"
-          label="Caption"
+          label="Caption *"
           dense
         />
       </div>
@@ -57,7 +57,7 @@
         </q-input>
       </div>
       <div class="row justify-center q-mt-lg">
-        <q-btn unelevated rounded color="primary" label="Post Image" @click='addPost()'/>
+        <q-btn unelevated rounded color="primary" label="Post Image" :disable='!post.photo || !post.caption' @click='addPost()'/>
       </div>
     </div>
   </q-page>
@@ -72,6 +72,7 @@ export default {
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
 import { uid, useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 import axios from 'axios';
 
 const $q = useQuasar()
@@ -81,6 +82,7 @@ const imageCaptured = ref(false);
 const hasCameraSupport = ref(true);
 const imageUpload = reactive([]);
 const locationLoading = ref(false);
+const router = useRouter();
 
 const post = reactive({
   id: uid(),
@@ -227,10 +229,22 @@ const addPost = () => {
 
   axios.post(`${process.env.API}/createPosts`, formData)
     .then(res => {
+      router.push('/')
+      $q.notify({
+        message: 'Post created',
+        color: 'green-13',
+        actions: [
+          { label: 'Dismiss', color: 'white' }
+        ]
+      })
       console.log(res)
     })
     .catch(err => {
       console.log(err)
+      $q.dialog({
+        title: 'Error',
+        message: 'Sorry, could not create post!'
+      })
     })
 }
 
