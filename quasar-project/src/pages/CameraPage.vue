@@ -217,6 +217,10 @@ const getLocation = () => {
 }
 
 const addPost = () => {
+  $q.loading.show({
+    delay: 400 // ms
+  })
+
   const formData = new FormData()
 
   formData.append('id', post.id)
@@ -229,6 +233,7 @@ const addPost = () => {
 
   axios.post(`${process.env.API}/createPosts`, formData)
     .then(res => {
+      console.log(res)
       router.push('/')
       $q.notify({
         message: 'Post created',
@@ -237,7 +242,7 @@ const addPost = () => {
           { label: 'Dismiss', color: 'white' }
         ]
       })
-      console.log(res)
+      $q.loading.hide()
     })
     .catch(err => {
       console.log(err)
@@ -245,6 +250,7 @@ const addPost = () => {
         title: 'Error',
         message: 'Sorry, could not create post!'
       })
+      $q.loading.hide()
     })
 }
 
