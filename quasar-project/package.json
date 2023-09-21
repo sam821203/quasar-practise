@@ -8,6 +8,7 @@
   "scripts": {
     "start": "npx quasar dev",
     "pwa": "quasar dev -m pwa",
+    "deploy": "quasar build -m pwa && firebase deploy",
     "lint": "eslint --ext .js,.vue ./",
     "dev": "quasar dev",
     "build": "quasar build",
